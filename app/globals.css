@@ -49,10 +49,20 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --font-sans: Impact, "Arial Black", "Helvetica Neue Condensed Black", Arial, Helvetica, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --poster-paper: #f4ead7;
+  --poster-paper-dark: #e3d3b6;
+  --poster-ink: #080b0b;
+  --poster-green: #73b53c;
+  --poster-green-bright: #a6da46;
+  --poster-blue: #2c7bbd;
+  --poster-red: #c33625;
+  --poster-gold: #d6aa27;
+  --background: #f4ead7;
+  --foreground: #080b0b;
+  --card: #fff8e9;
+  --card-foreground: #080b0b;
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
@@ -72,7 +82,7 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 0.35rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -123,8 +133,146 @@
   }
   body {
     @apply bg-background text-foreground;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(115, 181, 60, 0.16), transparent 24rem),
+      radial-gradient(circle at 86% 4%, rgba(44, 123, 189, 0.13), transparent 22rem),
+      linear-gradient(90deg, rgba(8, 11, 11, 0.045) 1px, transparent 1px),
+      linear-gradient(rgba(8, 11, 11, 0.035) 1px, transparent 1px),
+      var(--poster-paper);
+    background-size: auto, auto, 18px 18px, 18px 18px, auto;
   }
   html {
     @apply font-sans;
+  }
+}
+
+@layer components {
+  .poster-panel {
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(8, 11, 11, 0.88);
+    border-radius: 0.35rem;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.58), rgba(244, 234, 215, 0.9)),
+      var(--poster-paper);
+    box-shadow: 7px 7px 0 rgba(8, 11, 11, 0.92);
+  }
+
+  .poster-panel::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    opacity: 0.34;
+    background-image:
+      radial-gradient(rgba(8, 11, 11, 0.22) 0.75px, transparent 0.75px),
+      linear-gradient(100deg, transparent 0 46%, rgba(8, 11, 11, 0.08) 46% 48%, transparent 48% 100%);
+    background-size: 9px 9px, 72px 100%;
+    mix-blend-mode: multiply;
+  }
+
+  .poster-ink {
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--poster-ink);
+    border-radius: 0.2rem;
+    background:
+      linear-gradient(135deg, rgba(22, 29, 27, 0.96), rgba(4, 6, 6, 0.98)),
+      var(--poster-ink);
+    color: #fff8e9;
+    box-shadow: 5px 5px 0 rgba(115, 181, 60, 0.52);
+  }
+
+  .poster-ink::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: -12px;
+    background:
+      linear-gradient(6deg, transparent 0 9%, rgba(244, 234, 215, 0.13) 9% 11%, transparent 11% 100%),
+      radial-gradient(rgba(244, 234, 215, 0.42) 0.8px, transparent 1px);
+    background-size: 100% 34px, 8px 8px;
+    opacity: 0.28;
+  }
+
+  .brush-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 0;
+    border-radius: 0.08rem;
+    background: var(--poster-ink);
+    color: var(--poster-green-bright);
+    box-shadow: 4px 4px 0 rgba(115, 181, 60, 0.55);
+    transform: skewX(-7deg);
+  }
+
+  .brush-label > * {
+    transform: skewX(7deg);
+  }
+
+  .distressed-title {
+    color: var(--poster-ink);
+    text-shadow:
+      2px 2px 0 var(--poster-green),
+      4px 4px 0 rgba(8, 11, 11, 0.12);
+    letter-spacing: 0;
+  }
+
+  .poster-button {
+    border: 2px solid var(--poster-ink);
+    border-radius: 0.22rem;
+    background: #fff8e9;
+    color: var(--poster-ink);
+    box-shadow: 4px 4px 0 rgba(8, 11, 11, 0.9);
+  }
+
+  .poster-button-active {
+    background: var(--poster-green);
+    color: var(--poster-ink);
+    box-shadow: 4px 4px 0 var(--poster-ink);
+  }
+
+  .score-ticker {
+    will-change: transform;
+    animation: score-ticker 34s linear infinite;
+  }
+
+  .updating-panel::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(110deg, transparent 0 38%, rgba(166, 218, 70, 0.16) 46%, transparent 56% 100%);
+    transform: translateX(-120%);
+    animation: update-sweep 4.5s ease-in-out infinite;
+  }
+
+  @keyframes score-ticker {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes update-sweep {
+    0%,
+    55% {
+      transform: translateX(-120%);
+      opacity: 0;
+    }
+
+    65% {
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateX(120%);
+      opacity: 0;
+    }
   }
 }
